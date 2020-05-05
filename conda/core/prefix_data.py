@@ -13,6 +13,7 @@ import json
 
 from ..base.constants import PREFIX_STATE_FILE
 from .._vendor.auxlib.exceptions import ValidationError
+from .._vendor.packaging import version
 from ..base.constants import CONDA_PACKAGE_EXTENSIONS, PREFIX_MAGIC_FILE, CONDA_ENV_VARS_UNSET_VAR
 from ..base.context import context
 from ..common.compat import JSONDecodeError, itervalues, odict, string_types, with_metaclass
@@ -377,7 +378,8 @@ def get_python_version_for_prefix(prefix):
     if next_record is not None:
         raise CondaDependencyError("multiple python records found in prefix %s" % prefix)
     else:
-        return record.version[:3]
+        ver = version.parse(record.version)
+        return '%d.%d' % (ver.major, ver.minor)
 
 
 def delete_prefix_from_linked_data(path):
